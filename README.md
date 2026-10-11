@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Planify
 
-## Getting Started
+Planify es una aplicación web colaborativa para equipos de estudiantes que desarrollan proyectos académicos de software. Ayuda a transformar una idea en una planificación organizada, revisable y trazable **antes** de empezar a construir: objetivos, requisitos, historias de usuario y tareas, unidos por relaciones **manuales**.
 
-First, run the development server:
+No es un gestor genérico de tareas, un sistema de gestión académica ni un repositorio de documentos. El diferenciador es la trazabilidad entre elementos de planificación.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+El código de aplicación todavía es el scaffold de Next.js. El diseño funcional y técnico del MVP está en [`PLANIFY.md`](./PLANIFY.md) (fuente de verdad).
+
+## Requisitos
+
+- [Node.js](https://nodejs.org/) 24 LTS (previsto en `PLANIFY.md`; aún no hay campo `engines` en `package.json`)
+- [pnpm](https://pnpm.io/) 12.x (el repo declara `packageManager` en `package.json`)
+
+## Instalación
+
+```sh
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Uso / cómo levantarlo
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```sh
+pnpm dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Abre [http://localhost:3000](http://localhost:3000).
 
-## Learn More
+Otros scripts del `package.json`:
 
-To learn more about Next.js, take a look at the following resources:
+| Script | Qué hace |
+|---|---|
+| `pnpm build` | Compila para producción |
+| `pnpm start` | Sirve el build de producción |
+| `pnpm lint` | Lint y comprobación de formato con Biome |
+| `pnpm lint:fix` | Aplica correcciones seguras de Biome |
+| `pnpm format` | Formatea con Biome |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Aún no hay `.env.example` ni variables de entorno obligatorias: Supabase, Drizzle y Better Auth no están cableados.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Tests
 
-## Deploy on Vercel
+No hay script de test en `package.json`. El MVP prevé Vitest (unidad/integración) y Playwright (navegador); ver `PLANIFY.md` §24.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Recorrido del MVP (previsto)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```text
+Idea → Objetivos → Requisitos → Historias de usuario → Tareas → Revisión
+```
+
+Roles por proyecto: **propietario**, **editor** y **lector**. Un enlace de invitación no concede acceso hasta autenticarse y aceptar.
+
+## Documentación adicional
+
+- Fuente de verdad del producto: [`PLANIFY.md`](./PLANIFY.md)
+- Arquitectura: [`docs/architecture.md`](./docs/architecture.md)
+- Reglas para agentes: [`AGENTS.md`](./AGENTS.md)
+- Memoria de sesión: [`MEMORY.md`](./MEMORY.md)
+- Historial de cambios: [`CHANGELOG.md`](./CHANGELOG.md)
