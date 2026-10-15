@@ -1,3 +1,28 @@
 allowBuilds:
   sharp: false
   unrs-resolver: false
+  esbuild: true
+minimumReleaseAgeExclude:
+  - '@better-auth/core@1.7.10'
+  - '@better-auth/drizzle-adapter@1.7.10'
+  - '@better-auth/kysely-adapter@1.7.10'
+  - '@better-auth/memory-adapter@1.7.10'
+  - '@better-auth/mongo-adapter@1.7.10'
+  - '@better-auth/prisma-adapter@1.7.10'
+  - '@better-auth/telemetry@1.7.10'
+  - '@next/env@16.4.1'
+  - '@next/swc-darwin-arm64@16.4.1'
+  - '@next/swc-darwin-x64@16.4.1'
+  - '@next/swc-linux-arm64-gnu@16.4.1'
+  - '@next/swc-linux-arm64-musl@16.4.1'
+  - '@next/swc-linux-x64-gnu@16.4.1'
+  - '@next/swc-linux-x64-musl@16.4.1'
+  - '@next/swc-win32-arm64-msvc@16.4.1'
+  - '@next/swc-win32-x64-msvc@16.4.1'
+  - '@vitest/mocker@5.0.5'
+  - '@vitest/spy@5.0.5'
+  - better-auth@1.7.10
+  - next@16.4.1
+  - react-dom@19.3.1
+  - react@19.3.1
+  - vitest@5.0.5

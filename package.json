@@ -8,29 +8,39 @@
     "start": "next start",
     "lint": "biome check",
     "lint:fix": "biome check --write",
-    "format": "biome format --write"
+    "format": "biome format --write",
+    "typecheck": "tsc --noEmit"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/Johan409IA/planify.git"
   },
-  "keywords": ["planificacion", "proyectos"],
+  "keywords": [
+    "planificacion",
+    "proyectos"
+  ],
   "engines": {
-    "node": ">=24.15.0"
+    "node": "24.15.0"
   },
   "dependencies": {
-    "next": "16.4.0",
-    "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "better-auth": "1.7.10",
+    "drizzle-orm": "0.45.4",
+    "next": "16.4.1",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "zod": "4.6.7"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.15",
-    "@tailwindcss/turbopack": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+    "@playwright/test": "1.64.1",
+    "@tailwindcss/turbopack": "4.3.3",
+    "@types/node": "24.19.2",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "drizzle-kit": "0.31.11",
+    "tailwindcss": "4.3.3",
+    "typescript": "7.0.2",
+    "vitest": "5.0.5"
   },
   "packageManager": "pnpm@12.11.2+sha512.25a51652a196785af5f28bda6dfe8dc582ebefa4ac1d180221ce1390231c5fb76637822ea4b6e4633ce74acdcb0a77f725af11bad38177fdeddaee818a955cb9"
 }

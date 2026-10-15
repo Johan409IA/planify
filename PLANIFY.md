@@ -542,7 +542,7 @@ Se propone reemplazar el stack Laravel + Vue + Inertia + MySQL por un stack Type
 - Arquitectura monolítica modular.
 - Runtime: Node.js 24 LTS.
 - Framework full-stack: Next.js 16.x con App Router.
-- UI: React 19.x y TypeScript 5.x.
+- UI: React 19.x y TypeScript 7.x (TypeScript 5.x descartado: sigue la rama estable actual 7.x; `next build` usa su comprobador CLI, compatible con TypeScript 7).
 - Estilos: Tailwind CSS 4.x.
 - Componentes: shadcn/ui.
 - Validación: Zod.
@@ -869,7 +869,6 @@ Con esta revisión dejan de estar pendientes los siguientes puntos:
 
 Continúan sujetos a validación o elección final:
 
-- versiones menores exactas y lockfile del stack al iniciar la implementación;
 - diseño visual detallado de pantallas;
 - umbrales finales después de la prueba piloto;
 - revisión legal de conservación y protección de datos;

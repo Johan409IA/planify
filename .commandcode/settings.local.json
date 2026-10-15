@@ -1,0 +1,14 @@
+{
+  "disabledSkills": [
+    "better-auth-best-practices",
+    "codebase-memory",
+    "computer-use",
+    "context7-mcp",
+    "find-docs",
+    "find-skills",
+    "orca-cli",
+    "orchestration",
+    "playwright-cli",
+    "skill-creator"
+  ]
+}
