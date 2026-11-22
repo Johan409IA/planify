@@ -138,7 +138,7 @@ Nota de entorno: los secretos (`BETTER_AUTH_SECRET`, `SITE_URL`) se configuran c
 ### Definición de terminada
 - [x] La app vacía corre en local (`pnpm dev`) y responde.
 - [x] El esquema se sincroniza limpio desde cero (`npx convex dev --once` sobre el deployment).
-- [ ] CI en verde (se verifica al hacer push; los mismos pasos ya pasan en local).
+- [x] CI en verde (verificado el 2026-11-22 en GitHub Actions: lint + typecheck + Vitest).
 
 ---
 

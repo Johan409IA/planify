@@ -3,11 +3,11 @@
 Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo que ya no aporte.
 
 ## Estado actual
-- **Fase 0 (Cimientos) completada** (2026-10-27): Next 16.4.1 + React 19.3.1 + Tailwind 4 + shadcn/ui + Biome 2.5.15 + TS 7.0.2 + Node 24.15.0 + pnpm 12.11.2 exactos. Lint, typecheck, 5 tests unitarios, build y humo e2e en verde.
+- **Fase 0 (Cimientos) completada** (2026-11-22): Next 16.4.1 + React 19.3.1 + Tailwind 4 + shadcn/ui + Biome 2.5.15 + TS 7.0.2 + Node 24.15.0 + pnpm 12.11.2 exactos. Lint, typecheck, 7 tests unitarios, build, humo e2e y CI de GitHub en verde.
 - Backend: Convex (deployment dev `ardent-ant-931`, equipo `jotascript`) con las tablas de identidad de Better Auth (`user/session/account/verification/jwks`), desplegadas vía `npx convex dev --once`.
 - Componente `@convex-dev/better-auth` 0.12.6 como carpeta local `convex/betterAuth/` (con `_generated/`), registro en `convex/convex.config.ts`, rutas en `convex/http.ts`, proxy en `app/api/auth/[...all]/route.ts`.
 - `better-auth` fijado a **1.6.15** (el componente exige `>=1.6.11 <1.7.0`). Drizzle eliminado por decisión del usuario: Convex nativo, sin SQL.
-- CI creado (`.github/workflows/ci.yml`: lint + typecheck + tests; sin `convex codegen` porque `convex/_generated` y `convex/betterAuth/_generated` se versionan). Vitest: `vitest.config.mts` (`.mts` evita aviso ESM/CJS); pruebas en memoria con `convex-test` 0.0.73 + `@edge-runtime/vm` 5.0.0 (edge-runtime solo en ese archivo). Falta solo: validar CI al hacer push.
+- CI creado (`.github/workflows/ci.yml`: lint + typecheck + tests; sin `convex codegen` porque `convex/_generated` y `convex/betterAuth/_generated` se versionan). Vitest: `vitest.config.mts` (`.mts` evita aviso ESM/CJS); pruebas en memoria con `convex-test` 0.0.73 + `@edge-runtime/vm` 5.0.0 (edge-runtime solo en ese archivo). CI en verde (run 44979395559).
 - El diseño SQL del dominio (FK compuestas, índices únicos, BIGINT) queda pendiente de reescribirse a semántica Convex al planificar la Fase 1 (nota en roadmap §3).
 
 ## Decisiones (y por qué)
