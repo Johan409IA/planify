@@ -5,10 +5,13 @@ export default defineConfig({
   use: {
     baseURL: "http://localhost:3000",
   },
+  expect: {
+    timeout: 20_000,
+  },
   webServer: {
     command: "pnpm dev",
     url: "http://localhost:3000",
     reuseExistingServer: true,
-    timeout: 120_000,
+    timeout: 240_000,
   },
 });

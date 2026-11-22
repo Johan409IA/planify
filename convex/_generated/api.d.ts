@@ -8,7 +8,11 @@
  * @module
  */
 
+import type * as devMailbox from "../devMailbox.js";
 import type * as http from "../http.js";
+import type * as lib_authorization from "../lib/authorization.js";
+import type * as projectTemplate from "../projectTemplate.js";
+import type * as projects from "../projects.js";
 
 import type {
   ApiFromModules,
@@ -17,7 +21,11 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  devMailbox: typeof devMailbox;
   http: typeof http;
+  "lib/authorization": typeof lib_authorization;
+  projectTemplate: typeof projectTemplate;
+  projects: typeof projects;
 }>;
 
 /**

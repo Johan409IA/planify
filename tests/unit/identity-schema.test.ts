@@ -47,11 +47,25 @@ describe("esquema de identidad (Better Auth × Convex)", () => {
   });
 
   it("no queda ningún archivo de Drizzle ni de esquema SQL manual", () => {
-    for (const segments of [
-      ["convex", "schema.ts"],
-      ["drizzle.config.ts"],
-    ] as const) {
-      expect(existsSync(path.join(process.cwd(), ...segments))).toBe(false);
+    expect(existsSync(path.join(process.cwd(), "drizzle.config.ts"))).toBe(
+      false,
+    );
+  });
+
+  it("el esquema de dominio no define tablas de identidad", () => {
+    const domainSchemaPath = path.join(process.cwd(), "convex", "schema.ts");
+
+    expect(existsSync(domainSchemaPath)).toBe(true);
+    const source = readFileSync(domainSchemaPath, "utf8");
+
+    for (const table of [
+      "user",
+      "users",
+      "session",
+      "account",
+      "verification",
+    ]) {
+      expect(source).not.toMatch(new RegExp(`^  ${table}: defineTable`, "m"));
     }
   });
 });

@@ -166,31 +166,32 @@ Nota de entorno: los secretos (`BETTER_AUTH_SECRET`, `SITE_URL`) se configuran c
 ### Checklist
 
 #### Datos
-- [ ] Definir esquema Drizzle de `projects` con `owner_id TEXT` y `template_key` / `template_version`.
-- [ ] Definir `project_members` con `UNIQUE(project_id, user_id)` e índice único parcial para el propietario.
-- [ ] Definir `project_sections` con `UNIQUE(project_id, section_key)` y `CHECK(position >= 0)`.
-- [ ] Definir la plantilla base en código (versionada) que se **copia** al crear el proyecto, sin modificar la original.
+> Implementado en Convex nativo (`convex/schema.ts`); el diseño SQL de `PLANIFY.md` §31 se reescribió a semántica Convex según la nota de §3. Detalle: `docs/plans/fase-1.md`.
+- [x] Definir esquema Drizzle de `projects` con `owner_id TEXT` y `template_key` / `template_version`.
+- [x] Definir `project_members` con `UNIQUE(project_id, user_id)` e índice único parcial para el propietario.
+- [x] Definir `project_sections` con `UNIQUE(project_id, section_key)` y `CHECK(position >= 0)`.
+- [x] Definir la plantilla base en código (versionada) que se **copia** al crear el proyecto, sin modificar la original.
 
 #### Servidor
-- [ ] Servicio `CreateProjectService`: en una transacción crea el proyecto, la membresía `owner` y las secciones.
-- [ ] Impedir deshabilitar secciones con `is_required = true`.
-- [ ] Middleware / guardia de sesión para rutas privadas; los proyectos son privados por defecto.
-- [ ] En desarrollo, los correos de verificación y recuperación se imprimen en consola (el proveedor de correo real se configura en la Fase 8).
-- [ ] Helper de autorización de proyecto (membresía + rol) reutilizable por todas las acciones.
+- [x] Servicio `CreateProjectService`: en una transacción crea el proyecto, la membresía `owner` y las secciones.
+- [x] Impedir deshabilitar secciones con `is_required = true`.
+- [x] Middleware / guardia de sesión para rutas privadas; los proyectos son privados por defecto.
+- [x] En desarrollo, los correos de verificación y recuperación se imprimen en consola (el proveedor de correo real se configura en la Fase 8).
+- [x] Helper de autorización de proyecto (membresía + rol) reutilizable por todas las acciones.
 
 #### Frontend
-- [ ] Formularios con Zod + shadcn/ui.
-- [ ] Layout de proyecto con navegación `Definición → Objetivos → Requisitos → Historias → Tareas → Revisión`.
+- [x] Formularios con Zod + shadcn/ui.
+- [x] Layout de proyecto con navegación `Definición → Objetivos → Requisitos → Historias → Tareas → Revisión`.
 
 #### Pruebas
-- [ ] Integridad: no se crea un proyecto con propietario inexistente.
-- [ ] Integridad: como máximo un `owner` por proyecto.
-- [ ] Integridad: `projects.owner_id` coincide con la membresía `owner` tras crear el proyecto.
-- [ ] E2E: registrarse → verificar correo → crear proyecto.
+- [x] Integridad: no se crea un proyecto con propietario inexistente.
+- [x] Integridad: como máximo un `owner` por proyecto.
+- [x] Integridad: `projects.owner_id` coincide con la membresía `owner` tras crear el proyecto.
+- [x] E2E: registrarse → verificar correo → crear proyecto.
 
 ### Definición de terminada
-- Un usuario nuevo crea un proyecto desde la plantilla y lo ve solo él.
-- Nadie sin sesión ni membresía puede acceder a un proyecto.
+- [x] Un usuario nuevo crea un proyecto desde la plantilla y lo ve solo él.
+- [x] Nadie sin sesión ni membresía puede acceder a un proyecto.
 
 ---
 
