@@ -4,7 +4,7 @@ Planify es una aplicación web colaborativa para equipos de estudiantes que desa
 
 No es un gestor genérico de tareas, un sistema de gestión académica ni un repositorio de documentos. El diferenciador es la trazabilidad entre elementos de planificación.
 
-El código de aplicación todavía es el scaffold de Next.js. El diseño funcional y técnico del MVP está en [`PLANIFY.md`](./PLANIFY.md) (fuente de verdad).
+El repositorio cubre la Fase 0 del roadmap: Convex y Better Auth cableados (identidad en el deployment de Convex), CI de verificación y prueba de humo; las pantallas de producto llegan con la Fase 1. El diseño funcional y técnico del MVP está en [`PLANIFY.md`](./PLANIFY.md) (fuente de verdad).
 
 ## Requisitos
 
@@ -35,11 +35,16 @@ Otros scripts del `package.json`:
 | `pnpm lint:fix` | Aplica correcciones seguras de Biome |
 | `pnpm format` | Formatea con Biome |
 
-Aún no hay `.env.example` ni variables de entorno obligatorias: Supabase, Drizzle y Better Auth no están cableados.
+| `pnpm typecheck` | Comprueba tipos sin emitir |
+| `pnpm test` | Pruebas unitarias con Vitest |
+| `pnpm test:e2e` | Prueba de humo con Playwright |
+
+Las variables de entorno se describen en [`.env.example`](./.env.example). `npx convex dev` crea o actualiza `.env.local` (fuera de git); los secretos de Better Auth (`BETTER_AUTH_SECRET`, `SITE_URL`) se configuran en el deployment de Convex con `npx convex env set`.
 
 ## Tests
 
-No hay script de test en `package.json`. El MVP prevé Vitest (unidad/integración) y Playwright (navegador); ver `PLANIFY.md` §24.
+- `pnpm test`: Vitest con contratos del esquema de identidad (tablas de Better Auth, FK de texto, sin tabla `users` paralela).
+- `pnpm test:e2e`: prueba de humo de Playwright en local (la app debe responder en `http://localhost:3000`).
 
 ## Recorrido del MVP (previsto)
 

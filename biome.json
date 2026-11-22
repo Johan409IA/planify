@@ -15,7 +15,11 @@
       "!dist",
       "!build",
       "!next-env.d.ts",
-      "!public"
+      "!convex/_generated",
+      "!convex/betterAuth/_generated",
+      "!public",
+      "!test-results",
+      "!playwright-report"
     ]
   },
   "formatter": {

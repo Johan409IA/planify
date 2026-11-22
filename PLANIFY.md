@@ -546,13 +546,13 @@ Se propone reemplazar el stack Laravel + Vue + Inertia + MySQL por un stack Type
 - Estilos: Tailwind CSS 4.x.
 - Componentes: shadcn/ui.
 - Validación: Zod.
-- Persistencia: Supabase Database, usando PostgreSQL administrado por Supabase.
-- ORM y migraciones: Drizzle ORM + Drizzle Kit.
-- Autenticación: Better Auth, con correo/contraseña, verificación de correo y recuperación de contraseña.
+- Persistencia: Convex, usando el backend con base de datos integrada.
+- Esquema y sincronización: esquema nativo de Convex, empujado con la CLI (`npx convex dev`); sin migraciones SQL.
+- Autenticación: Better Auth (componente oficial `@convex-dev/better-auth`), con correo/contraseña, verificación de correo y recuperación de contraseña.
 - Pruebas unitarias e integración: Vitest.
 - Pruebas de navegador: `@playwright/test` como dependencia de desarrollo del proyecto.
 - Gestión de paquetes: pnpm.
-- Entorno local: no requiere Docker Compose; el desarrollo puede conectarse a un proyecto Supabase remoto.
+- Entorno local: no requiere Docker Compose; el desarrollo puede conectarse a un backend Convex local o remoto.
 - Sin microservicios, base de datos de grafos, Redis, API pública ni IA en el MVP.
 
 ### Organización arquitectónica
@@ -564,33 +564,31 @@ Next.js alojará la interfaz y el backend en una sola aplicación:
 - App Router y Server Components para las lecturas de páginas.
 - Server Actions o Route Handlers para operaciones de aplicación.
 - Servicios de dominio en módulos independientes para reglas de negocio.
-- Drizzle únicamente en el servidor, nunca desde componentes del navegador.
+- El acceso al backend de Convex únicamente en el servidor y en las funciones del backend, nunca desde componentes del navegador.
 - Better Auth expuesto mediante su Route Handler de autenticación.
 
 Las operaciones críticas de invitaciones, transferencia, aprobación y purga se ejecutarán en servicios de aplicación transaccionales, no directamente desde componentes de interfaz.
 
 ### Motivo de la propuesta
 
-Este stack es más uniforme para el proyecto porque utiliza TypeScript de extremo a extremo, reduce la separación entre frontend y backend, permite expresar las claves foráneas compuestas directamente sobre PostgreSQL y conserva una arquitectura sencilla de desplegar.
+Este stack es más uniforme para el proyecto porque utiliza TypeScript de extremo a extremo, reduce la separación entre frontend y backend, mantiene los types sincronizados entre cliente y servidor y conserva una arquitectura sencilla de desplegar.
 
-Drizzle se elige sobre un ORM más abstracto porque el modelo de Planify depende de restricciones SQL explícitas, claves foráneas compuestas, índices y migraciones revisables. Las relaciones declaradas por el ORM no sustituirán las restricciones reales de PostgreSQL.
+Convex se elige como backend por sus funciones type-safe de extremo a extremo, sus mutaciones atómicas (transacciones por función) y su esquema empujable con la CLI. Las garantías de integridad pasan de las restricciones SQL a los validadores del esquema y a las comprobaciones atómicas dentro de cada mutación.
 
-Supabase se utilizará principalmente como proveedor de PostgreSQL administrado. La aplicación no dependerá del Data API de Supabase para las operaciones principales: Next.js ejecutará las consultas desde el servidor mediante Drizzle.
+La integración de Better Auth con el backend usará el componente oficial `@convex-dev/better-auth` (mantenido por Convex): el esquema de Better Auth (`user`, `session`, `account`, `verification`, `jwks`) vive en el esquema de Convex, y Better Auth sigue siendo la identidad de la aplicación.
 
-En el MVP se mantendrá **Better Auth** como sistema de autenticación de la aplicación. No se combinarán Better Auth y Supabase Auth para las mismas cuentas, sesiones o permisos. Supabase Auth podrá evaluarse posteriormente como alternativa, pero no forma parte de esta decisión.
+En el MVP se mantendrá **Better Auth** como sistema de autenticación de la aplicación. No se combinarán Better Auth y la autenticación del backend para las mismas cuentas, sesiones o permisos. La autenticación del backend podrá evaluarse posteriormente como alternativa, pero no forma parte de esta decisión.
 
-### Conexión a Supabase
+### Conexión a Convex
 
 - La cadena de conexión se almacenará únicamente en variables de entorno del servidor.
-- Nunca se expondrán la contraseña de PostgreSQL, la clave `service_role` ni credenciales equivalentes al navegador.
-- Para migraciones y operaciones administrativas se utilizará la conexión directa recomendada por Supabase.
-- Para un backend persistente se preferirá la conexión directa o el pooler en modo sesión, según la red disponible.
-- Si el despliegue utiliza funciones serverless, se evaluará el pooler en modo transacción y se desactivarán las prepared statements cuando corresponda.
-- Las operaciones críticas seguirán siendo transacciones reales de PostgreSQL.
+- Nunca se expondrá el secreto de Better Auth (`BETTER_AUTH_SECRET`) ni otras credenciales del deployment al navegador; solo viajan variables `NEXT_PUBLIC_*` al cliente.
+- Para despliegues y operaciones administrativas se utilizará la CLI de Convex (`npx convex env set`, `npx convex deploy`).
+- Las operaciones críticas seguirán siendo transacciones del backend (mutaciones atómicas de Convex).
 
-Aunque la aplicación no use el Data API desde el navegador, las tablas expuestas en el esquema público deberán tener una política de seguridad definida y RLS habilitado antes de exponerlas mediante APIs de Supabase.
+Aunque la aplicación no exponga funciones del backend al navegador, las tablas del backend deberán tener una política de acceso definida antes de exponerlas mediante funciones públicas.
 
-Las operaciones que modifiquen varias entidades, como aceptación de invitaciones, transferencias de propiedad, aprobación y eliminación definitiva, deberán ejecutarse dentro de transacciones de PostgreSQL mediante Drizzle.
+Las operaciones que modifiquen varias entidades, como aceptación de invitaciones, transferencias de propiedad, aprobación y eliminación definitiva, deberán ejecutarse dentro de una mutación atómica de Convex (transacción por función).
 
 ### Fuentes técnicas consultadas
 
@@ -598,15 +596,14 @@ Las operaciones que modifiquen varias entidades, como aceptación de invitacione
 - [Guía de autenticación de Next.js](https://nextjs.org/docs/app/guides/authentication)
 - [Better Auth con Next.js](https://better-auth.com/docs/integrations/next)
 - [Better Auth: correo y contraseña](https://better-auth.com/docs/authentication/email-password)
-- [Better Auth: adaptador Drizzle y generación de esquema](https://better-auth.com/docs/adapters/drizzle)
+- [Better Auth: integración con Convex](https://better-auth.com/docs/integrations/convex)
+- [@convex-dev/better-auth (documentación del componente)](https://labs.convex.dev/better-auth)
 - [Better Auth: esquema de base de datos](https://better-auth.com/docs/concepts/database)
-- [Drizzle ORM: PostgreSQL](https://orm.drizzle.team/docs/get-started/postgresql-existing)
-- [Drizzle ORM: migraciones](https://orm.drizzle.team/docs/migrations)
-- [Drizzle ORM: claves e índices](https://orm.drizzle.team/docs/indexes-constraints)
-- [PostgreSQL 18](https://www.postgresql.org/docs/current/)
-- [Supabase: conexión a PostgreSQL](https://supabase.com/docs/guides/database/connecting-to-postgres)
-- [Supabase: Row Level Security](https://supabase.com/docs/guides/database/postgres/row-level-security)
-- [Supabase: SSR con Next.js](https://supabase.com/docs/guides/auth/server-side/creating-a-client)
+- [Convex: esquema y validadores](https://docs.convex.dev/database/schemas)
+- [Convex: transacciones y mutaciones](https://docs.convex.dev/database/writing-data)
+- [Convex: base de datos](https://docs.convex.dev/database)
+- [Convex: autenticación](https://docs.convex.dev/auth)
+- [Convex: funciones del backend](https://docs.convex.dev/functions/overview)
 - [Tailwind CSS](https://tailwindcss.com/docs)
 - [Vitest](https://vitest.dev/guide/)
 - [Playwright](https://playwright.dev/docs/intro)
@@ -734,19 +731,19 @@ Archivar un `planning_item` no eliminará el registro ni sus relaciones. El elem
 - no contará como elemento activo para las comprobaciones de preparación;
 - se mostrará como archivado en los elementos relacionados.
 
-## 26. Migraciones recomendadas para `planning_items`
+## 26. Orden recomendado para crear `planning_items` en Convex
 
-Las migraciones deben ejecutarse en un orden que permita crear las claves foráneas sin referencias incompletas:
+El esquema de Convex se empuja en su totalidad con la CLI; el orden garantiza que los validadores y las comprobaciones de las mutaciones encuentren siempre los datos completos:
 
-1. Crear `projects` y `users`.
-2. Crear `planning_items` con `project_id`, `item_type`, estados y auditoría usando Drizzle Kit y SQL generado revisable.
-3. Crear el índice único `(project_id, id)`.
+1. Crear `projects` y las tablas de identidad de Better Auth (`user`, `session`, `account`, `verification`).
+2. Crear `planning_items` con `project_id`, `item_type`, estados y auditoría (validadores revisables en el repositorio).
+3. Declarar los índices equivalentes a `(project_id, id)`.
 4. Crear `requirement_details`, `user_story_details`, `story_acceptance_criteria` y `task_details`.
-5. Crear `traceability_links` con sus dos claves foráneas compuestas.
+5. Crear `traceability_links` con sus comprobaciones de pertenencia al proyecto (equivalente de las FK compuestas).
 6. Crear `project_members`, invitaciones, aceptaciones y demás entidades colaborativas.
 7. Añadir índices de consulta para proyecto, tipo, estado y relaciones.
 
-Las migraciones deberán evitar depender únicamente de validaciones de Drizzle o del backend. Las restricciones únicas, las claves foráneas y los índices serán la última barrera de integridad.
+El push del esquema no reemplaza las comprobaciones de negocio: los validadores del esquema Convex y las comprobaciones atómicas dentro de cada mutación serán la última barrera de integridad.
 
 ### Pruebas de integridad mínimas
 
@@ -880,18 +877,17 @@ Continúan sujetos a validación o elección final:
 
 Planify no mantendrá una tabla `users` manual independiente de Better Auth.
 
-La fuente de verdad para identidad será el esquema generado por Better Auth para Drizzle. Antes de crear las migraciones de la aplicación se deberá:
+La fuente de verdad para identidad será el esquema de Convex del componente `@convex-dev/better-auth` (`convex/betterAuth/schema.ts`). Al modificar la configuración de identidad (`convex/betterAuth/auth.ts`) se deberá:
 
-1. Configurar el adaptador de Better Auth para Drizzle con `provider: "pg"`.
-2. Generar el esquema oficial mediante el CLI de Better Auth:
+1. Regenerar el esquema oficial mediante el CLI de Better Auth:
 
    ```text
-   npx auth@latest generate --output src/db/auth-schema.ts
+   pnpm dlx auth generate --config ./convex/betterAuth/auth.ts --output ./convex/betterAuth/schema.ts -y
    ```
 
-3. Revisar el esquema generado y conservarlo como referencia de las tablas de autenticación.
-4. Generar las migraciones de Drizzle a partir de ese esquema.
-5. Ejecutar la comprobación del esquema de Better Auth antes de integrar cambios de autenticación.
+2. Revisar el esquema generado y conservarlo como fuente oficial de las tablas de autenticación (no se edita a mano).
+3. Empujar el esquema y las funciones al deployment de Convex (`npx convex dev --once` en desarrollo).
+4. Ejecutar la prueba de contrato del esquema (`pnpm test`) antes de integrar cambios de autenticación.
 
 El comando y la salida exacta podrán variar con la versión instalada; la regla importante es que el esquema generado por Better Auth sea la fuente oficial y no una copia manual desactualizada.
 
@@ -904,7 +900,7 @@ Better Auth requiere como mínimo las entidades conceptuales:
 - `account`;
 - `verification`.
 
-Los identificadores de Better Auth son cadenas (`string`), que en PostgreSQL/Drizzle se representarán como `text`. Por tanto, todas las claves foráneas de Planify que apunten a una identidad utilizarán `text` y no `BIGINT`:
+Los identificadores de Better Auth son cadenas (`string`). Por tanto, todas las claves foráneas de Planify que apunten a una identidad usarán cadenas (`v.string()` en Convex) y nunca IDs numéricos:
 
 - `projects.owner_id`;
 - `project_members.user_id`;
@@ -922,13 +918,13 @@ Las tablas de Better Auth conservarán los campos y tipos producidos por el gene
 
 No se utilizará simultáneamente una tabla `users` propia y la tabla de usuario de Better Auth para representar la misma identidad.
 
-### 30.3. Autenticación y Supabase
+### 30.3. Autenticación y backend
 
-Supabase se utilizará como PostgreSQL administrado, pero Better Auth seguirá siendo el sistema de usuarios, sesiones y cuentas del MVP. No se mezclará la tabla `auth.users` de Supabase Auth con la tabla `user` de Better Auth.
+Convex se utilizará como backend, pero Better Auth seguirá siendo el sistema de usuarios, sesiones y cuentas del MVP. No se mezclará la tabla de usuarios del backend con la tabla `user` de Better Auth.
 
 ## 31. Esquema relacional completo del MVP
 
-Los tipos de dominio siguientes usan `BIGINT GENERATED BY DEFAULT AS IDENTITY`. Los identificadores de usuarios siempre usan `TEXT`, porque proceden de Better Auth.
+Los tipos de dominio siguientes están descritos con tipos SQL (`BIGINT`) del diseño original; su equivalente en Convex (identificadores de documento `Id<...>`) se definirá al planificar la Fase 1, sin cambiar las reglas de negocio. Los identificadores de usuarios siempre son cadenas, porque proceden de Better Auth.
 
 ### 31.1. `projects`
 
@@ -1167,7 +1163,7 @@ Las reglas críticas residirán en servicios del servidor, por ejemplo:
 
 Estos servicios serán los responsables de transacciones, autorización de dominio, validaciones estructurales y actualización coordinada de varias tablas.
 
-Los Server Components se utilizarán principalmente para lecturas y renderizado. La base de datos y las credenciales de Supabase nunca se importarán en componentes del navegador.
+Los Server Components se utilizarán principalmente para lecturas y renderizado. La base de datos y las credenciales del backend nunca se importarán en componentes del navegador.
 
 ## 34. Pruebas adicionales antes de construir pantallas
 
